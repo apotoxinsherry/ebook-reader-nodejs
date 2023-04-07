@@ -12,6 +12,8 @@ const path = require('path');
 
 let books = [];
 
+const validExtensions = [".epub", ".mobi", ".azw3", ".cbr", ".cbz", ".fbz"];
+
 
 // use express to create a route for the specified location. create a get request for book location, where the location
 // used by the client side epubjs is just /book/name or smth like that. 
@@ -25,7 +27,8 @@ let scanbook = function () {
             console.log(err)
         } else {
             files.forEach(function (file) {
-                if (path.extname(file) === ".epub") {
+                let ext = path.extname(file);
+                if (validExtensions.includes(ext)) {
                     let book = {
                         title: file,
                         directory: dirPath + "/" + file

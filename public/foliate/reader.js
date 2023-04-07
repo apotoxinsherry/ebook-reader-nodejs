@@ -304,7 +304,28 @@ else dropTarget.style.visibility = 'visible'
 
 const bookName = document.getElementById("loc").getAttribute("x");
 
+const fileExtensionPattern = /\.([0-9a-z]+)(?=[?#])|\.([\w]+)$/i;
+const fileExt = bookName.match(fileExtensionPattern)[2];
+
+let fileType = "";
+
+if (fileExt === "epub") {
+    fileType = 'application/epub+zip';
+}
+else if (fileExt === "mobi" | fileExt === "azw3") {
+    fileType = 'application/x-mobipocket-ebook';
+}
+
+else if(fileExt === "cbr" | fileExt === "cbz" | fileExt === "fbz") {
+    fileType = 'application/vnd.comicbook+zip';
+}
+
+else {
+    fileExt = 'text/plain';
+}
+
+
 fetch("/books/" + bookName).then(response => response.blob()).then(blob => {
-    const file = new File([blob], 'book.epub',{ type: 'application/epub+zip' } );
+    const file = new File([blob], 'book.epub',{ type: fileType } );
     open(file);
 })
