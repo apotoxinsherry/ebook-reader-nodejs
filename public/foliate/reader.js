@@ -326,6 +326,6 @@ else {
 
 
 fetch("/books/" + bookName).then(response => response.blob()).then(blob => {
-    const file = new File([blob], 'book.epub',{ type: fileType } );
+    const file = new File([blob], 'book.' + fileExt, { type: fileType } );
     open(file);
 })
