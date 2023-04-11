@@ -3,3 +3,5 @@ books/
 node_modules/
 
 *.epub
+
+.env
