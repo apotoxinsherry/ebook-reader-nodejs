@@ -10,16 +10,21 @@ app.use(express.static('public'));
 const fs = require("fs");
 const path = require('path');
 
+const validateUser  = require("./userAuth")
+
 let books = [];
 
 const validExtensions = [".epub", ".mobi", ".azw3", ".cbr", ".cbz", ".fbz"];
 
 
-// use express to create a route for the specified location. create a get request for book location, where the location
-// used by the client side epubjs is just /book/name or smth like that. 
-// Express handles which book to send. 
-
 const dirPath = __dirname + "/books";
+
+var isAuthenticated = false; 
+
+
+function duplicateBookChecker(array, obj) {
+    return array.find(item => item.title === obj.title && item.directory === obj.directory) !== undefined;
+  }
 
 let scanbook = function () {
     fs.readdir(dirPath, function (err, files) {
@@ -33,8 +38,11 @@ let scanbook = function () {
                         title: file,
                         directory: dirPath + "/" + file
                     }
-
-                    books.push(book);
+                    // check if the book already exists in the array. if not, it adds to it. 
+                    if (!duplicateBookChecker(books, book)) {
+                        books.push(book);
+                    }
+                    
                 }
             })
         }
@@ -44,31 +52,78 @@ let scanbook = function () {
 scanbook(); 
 
 app.get("/", function(req, res) {
-    res.render("index", {bookList: books, bodyEx: 69});
+    res.render("login");
+    
 });
 
-//this part is sussy
-app.get("/books/:book", function(req, res) {
-    books.forEach(function(file) {
-        if(file['title'] === req.params.book) {
-            res.sendFile(file['directory']);
-        }
-    })
+app.get("/index", function(req, res) {
+    if(isAuthenticated) {
+        res.render("index", {bookList: books, bodyEx: 69});
+    }
+    else {
+        res.send("Unauthorized access");
+    }
+    
+})
+
+app.get("/books/:book", function (req, res) {
+    if (isAuthenticated) {
+        books.forEach(function (file) {
+            if (file['title'] === req.params.book) {
+                res.sendFile(file['directory']);
+            }
+        })
+    }
+
 });
 
 
 
 app.get("/renderer/:bookLoc", function(req, res) {
-    res.render("reader", {bookLoc: req.params.bookLoc});
+    if(isAuthenticated) {
+        res.render("reader", {bookLoc: req.params.bookLoc});
+    }
+    else {
+        res.send("Unauthorized access");
+    }
+    
 });
 
-app.get("/reader", function(req, res) {
-    res.render("reader")
-})
+// app.get("/reader", function(req, res) {
+//     res.render("reader")
+// })
 
 app.post("/refresh", function(req, res) {
     scanbook();
     res.redirect("/")
+})
+
+
+app.post("/", async function(req, res) {
+    console.log(req.body)
+    const userName = req.body.uname;
+    const password = req.body.pword;
+
+    console.log("Username is " + userName);
+
+    validateUser.validateUser(userName, password).then(function(value) {
+        console.log(value);
+        isAuthenticated = value;
+        if(isAuthenticated) {
+            res.redirect("/index");
+        }
+        else {
+            res.redirect("/error");
+    
+        }
+    });
+
+    
+
+})
+
+app.get("/error", function(req, res) {
+    res.send("Unauthorized access");
 })
 
 app.listen(3000, function() {
