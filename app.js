@@ -52,7 +52,13 @@ let scanbook = function () {
 scanbook(); 
 
 app.get("/", function(req, res) {
-    res.render("login");
+    if(isAuthenticated) {
+        res.redirect("/index");
+    }
+    else {
+        res.render("login");
+    }
+    
     
 });
 
@@ -95,7 +101,7 @@ app.get("/renderer/:bookLoc", function(req, res) {
 
 app.post("/refresh", function(req, res) {
     scanbook();
-    res.redirect("/")
+    res.redirect("/index");
 })
 
 
