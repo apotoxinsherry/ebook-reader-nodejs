@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body x="<%= bodyEx %>" id="body">
-    <ul>
+<%- include ('partials/header') %>
+
+    
+    <ul class="list-group">
     <% bookList.forEach(function (book){  %>
-      <li><a href="/renderer/<%= book['title'] %>"> <%= book['title'] %></a></li>
+      <li class="list-group-item"><a href="/renderer/<%= book['title'] %>" class="list-group-item list-group-item-action"> <%= book['title'] %></a></li>
     <% }); %>
 </ul>
 
 <form method="post" action="/refresh">
-    <button type="submit">Scan for addition</button>
+    <button type="submit" class="btn btn-secondary">Scan for addition</button>
 </form>
 
-</body>
-</html>
+<%- include ('partials/footer') %>
