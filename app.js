@@ -11,7 +11,7 @@ const path = require('path');
 
 
 app.use(session({
-    secret: "dumbdumbsecret",
+    secret: process.env.superSecretKey,
     resave: false,
     saveUninitialized: false
 }
