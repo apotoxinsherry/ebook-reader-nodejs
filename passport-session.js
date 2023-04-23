@@ -1,5 +1,5 @@
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("./userAuth");
+const User = require("./userModule");
 
 function initPassport(passport) {
     passport.use(new LocalStrategy(User.authenticate()));

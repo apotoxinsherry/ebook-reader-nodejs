@@ -41,17 +41,36 @@ app.get("/index", function(req, res) {
     }
 })
 
+app.post("/logout", function(req, res){
+    req.logOut(function(err){
+        if (err){
+            console.log(err);
+        }
+
+        res.redirect("/");
+    });
+})
+
 
 app.get("/", function(req, res) {
-    //if(isAuthenticated) {
-        //res.redirect("/index");
-    //}
-    //else {
-        res.render("login");
-    //}
-    
-    
+    if(req.isAuthenticated()) {
+        res.redirect("/index");
+    }
+
+    else {
+        res.redirect("/login");
+    }
 });
+
+app.get("/login", function(req, res) {
+    if(req.isAuthenticated()) {
+        res.redirect("/");
+    }
+
+    else {
+        res.render("login");
+    }
+})
 
 
 app.get("/books/:book", function (req, res) {
@@ -77,9 +96,6 @@ app.get("/renderer/:bookLoc", function(req, res) {
     
 });
 
-// app.get("/reader", function(req, res) {
-//     res.render("reader")
-// })
 
 app.post("/refresh", function(req, res) {
     book.reScan();
@@ -88,29 +104,7 @@ app.post("/refresh", function(req, res) {
 
 
 app.post("/", passport.authenticate('local', { failureRedirect: '/error' }), function(req, res) {
-    console.log(req.body)
-    const userName = req.body.username;
-    const password = req.body.password;
-
-    console.log("Username is " + userName);
-    res.render("index", {bookList: book.bookArr, bodyEx: 69});
-
-
-
-    // validateUser.validateUser(userName, password).then(function(value) {
-    //     console.log(value);
-    //     isAuthenticated = value;
-    //     if(isAuthenticated) {
-    //         res.redirect("/index");
-    //     }
-    //     else {
-    //         res.redirect("/error");
-    
-    //     }
-    // });
-
-    
-
+    res.redirect("/index");
 })
 
 app.get("/error", function(req, res) {
