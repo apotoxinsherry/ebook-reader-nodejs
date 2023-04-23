@@ -1,0 +1,6 @@
+todo.txt
+books/
+node_modules/
+.git/
+.gitignore
+*.epub

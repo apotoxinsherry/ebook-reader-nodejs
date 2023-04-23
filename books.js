@@ -6,10 +6,19 @@ let books = [];
 
 const validExtensions = [".epub", ".mobi", ".azw3", ".cbr", ".cbz", ".fbz"];
 
+//there must be some better way to implement dockerization.
 
-const dirPath = __dirname + "/books";
 
-var isAuthenticated = false; 
+var dirPath = "";
+const isDocker = process.env.DOCKER;
+console.log(isDocker);
+if (isDocker == 1) {
+    dirPath = "/books";
+}
+else {
+    dirPath = __dirname + "/books";
+}
+
 
 
 function duplicateBookChecker(array, obj) {
