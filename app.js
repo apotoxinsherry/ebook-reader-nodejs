@@ -9,6 +9,8 @@ const session = require("express-session");
 const fs = require("fs");
 const path = require('path');
 
+require('dotenv').config();
+
 
 app.use(session({
     secret: process.env.superSecretKey,
